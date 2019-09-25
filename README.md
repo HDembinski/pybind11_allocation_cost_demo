@@ -2,7 +2,7 @@
 
 This demo shows the memory allocation costs for values and arrays of values.
 
-In C++, allocation from the Heap (with new or malloc) is generally done sparsely, because it can be huge cost, O(100) or much more CPU cycles. So the general recommendation is to avoid allocating from the Heap and allocate from the Stack instead, which is O(1) CPU cycles.
+In C++, allocation from the Heap (with new or malloc) is generally done sparsely, because it can incur a large cost, O(100) or much more CPU cycles. The general recommendation is to avoid allocating from the Heap and allocate from the Stack instead when possible, which is O(1) CPU cycles.
 
 But as always, things are not so simple, because system engineers know about these costs and use various methods to mitigate them, especially for code that people write commonly.
 
