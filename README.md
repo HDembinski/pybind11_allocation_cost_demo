@@ -10,7 +10,7 @@ I wrote a simple pybind11 module that returns values and arrays of values in dif
 
 # Results
 
-See into code how the different functions are implemented. The code was compiled with `-O3`.
+See into the code how the different functions are implemented. The code was compiled with `-O3`.
 
 ```sh
 $ python3 -m timeit -s "from foo import value, unique, vector, numpy, tuple, tuple_from_list" "value(0)"
@@ -23,7 +23,7 @@ $ python3 -m timeit -s "from foo import value, unique, vector, numpy, tuple, tup
 1000000 loops, best of 5: 314 nsec per loop
 ```
 
-`unique` should be much slower than `value`, but the performance is equal, even with `-O0`. This suggests that allocation of small PODs is optimized on the system level.
+`unique(...)` should be much slower than `value(...)`, but the performance is equal, even with `-O0`. This suggests that allocation of small PODs is optimized on the system level.
 
 ```sh
 $ python3 -m timeit -s "import foo" "foo.vector(100)"
