@@ -33,10 +33,38 @@ PYBIND11_MODULE(foo, m) {
       return x; // converts into Python list
     });
 
+    m.def("list", [](int n){
+      auto l = py::list(n);
+      for (int i = 0; i < n; ++i)
+        l[i] = i;
+      return l;
+    });
+
+    m.def("list_fast", [](int n){
+      auto l = py::list(n);
+      for (int i = 0; i < n; ++i)
+        PyList_SET_ITEM(l.ptr(), (ssize_t) i, py::cast(i).release().ptr());
+      return l;
+    });
+
+    m.def("list_append", [](int n){
+      auto l = py::list();
+      for (int i = 0; i < n; ++i)
+        l.append(i);
+      return l;
+    });
+
     m.def("tuple", [](int n){
       auto t = py::tuple(n);
       for (int i = 0; i < n; ++i)
         t[i] = i;
+      return t;
+    });
+
+    m.def("tuple_fast", [](int n){
+      auto t = py::tuple(n);
+      for (int i = 0; i < n; ++i)
+        PyTuple_SET_ITEM(t.ptr(), (ssize_t) i, py::cast(i).release().ptr());
       return t;
     });
 
