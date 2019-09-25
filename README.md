@@ -69,4 +69,4 @@ For a list it is better to allocate first and then set the items instead of fill
 
 Directly filling a tuple is better than first filling a list and then to convert it to tuple, also no surprise here.
 
-Allocating and filling a numpy array is the fastest of course, since there is no additional allocation needed for each item in the array.
+Allocating and filling a numpy array is the fastest, of course, since there is no additional raw type to Python object conversion needed for each item in the array.
