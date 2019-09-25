@@ -61,9 +61,9 @@ $ python3 -m timeit -s "import foo" "foo.numpy(1000)"
 200000 loops, best of 5: 1.31 usec per loop
 ```
 
-Filling a vector first in C++ and letting pybind11 convert it into a Python list should be slower than allocating a Python list or tuple and filling that directly, because memory is allocated once more than necessary for the vector. For small vectors, this is correct, but not for large vectors. This means that the allocation cost for the vector is already negligible to the cost of filling the list or tuple. 
+Filling a vector first in C++ and letting pybind11 convert it into a Python list should be slower than allocating a Python list or tuple and filling that directly, because memory is allocated once more than necessary for the vector. For small vectors, this is correct, but not for large vectors (N=1000+). This means that the allocation cost for the vector is already negligible compared to the cost of filling the list or tuple, which is very costly in Python.
 
-Allocating and filling lists or tuples make no difference in speed. However, using the unchecked `PyList_SET_ITEM` and `PyTuple_SET_ITEM` makes a noticable difference. These unchecked functions are also used internally by pybind11 when it converts the vector.
+Allocating and filling lists or tuples make no difference in speed. However, using the unchecked `PyList_SET_ITEM` and `PyTuple_SET_ITEM` rather than the obvious pybind11 API makes a noticable difference. These unchecked functions are also used internally by pybind11 when it converts the vector to a list.
 
 For a list it is better to allocate first and then set the items instead of filling with `append`, no surprise here.
 
