@@ -13,14 +13,14 @@ I wrote a simple pybind11 module that returns values and arrays of values in dif
 See into the code how the different functions are implemented. The code was compiled with `-O3`.
 
 ```sh
-$ python3 -m timeit -s "from foo import value, unique, vector, numpy, tuple, tuple_from_list" "value(0)"
-1000000 loops, best of 5: 316 nsec per loop
-$ python3 -m timeit -s "from foo import value, unique, vector, numpy, tuple, tuple_from_list" "value(1)"
-1000000 loops, best of 5: 309 nsec per loop
-$ python3 -m timeit -s "from foo import value, unique, vector, numpy, tuple, tuple_from_list" "unique(1)"
-1000000 loops, best of 5: 311 nsec per loop
-$ python3 -m timeit -s "from foo import value, unique, vector, numpy, tuple, tuple_from_list" "unique(0)"
-1000000 loops, best of 5: 314 nsec per loop
+$ python3 -m timeit -s "import foo" "foo.value(0)"
+1000000 loops, best of 5: 347 nsec per loop
+$ python3 -m timeit -s "import foo" "foo.value(1)"
+1000000 loops, best of 5: 393 nsec per loop
+$ python3 -m timeit -s "import foo" "foo.unique(0)"
+1000000 loops, best of 5: 357 nsec per loop
+$ python3 -m timeit -s "import foo" "foo.unique(1)"
+1000000 loops, best of 5: 364 nsec per loop
 ```
 
 `unique(...)` should be much slower than `value(...)`, but the performance is equal, even with `-O0`. This suggests that allocation of small PODs is optimized on the system level.
