@@ -1,16 +1,16 @@
-# pybind11_allocation_cost_demo
+# pybind11 experiments: comparing costs of returning values and arrays of values using different approaches
 
-This demo shows the memory allocation costs for values and arrays of values.
+This demo shows the costs for returning values and arrays of values. A main theme is the cost of memory allocation in C++, which is not negligible. Allocating temporary C++ objects should be avoided if possible.
 
-In C++, allocation from the Heap (with new or malloc) is generally done sparsely, because it can incur a large cost, O(100) or much more CPU cycles. The general recommendation is to avoid allocating from the Heap and allocate from the Stack instead when possible, which is O(1) CPU cycles.
+In C++, allocation from the Heap (with new or malloc) should be done sparingly in performance critical code, because it can incur a large cost, O(100) or much more CPU cycles. The general recommendation is to avoid allocating from the Heap and allocate from the Stack instead when possible, which is O(1) CPU cycles.
 
-But as always, things are not so simple, because system engineers know about these costs and use various methods to mitigate them, especially for code that people write commonly.
+But as always, things are not so simple, because system engineers know about these costs and use various methods to mitigate them, especially for code that people write commonly. Doing something clever may not produce faster code, because the naive approach is anticipated and optimized, while the compiler may not be able to optimize "clever" code.
 
 I wrote a simple pybind11 module that returns values and arrays of values in different ways. We compare the speed of execution of the Python functions with timeit.
 
 # Results
 
-See into the code how the different functions are implemented. The code was compiled with `-O3`.
+Take a quick look into the code how the different functions are implemented, I won't explain it here. The code was compiled with `-O3`.
 
 ```sh
 $ python3 -m timeit -s "import foo" "foo.value(0)"
@@ -61,9 +61,9 @@ $ python3 -m timeit -s "import foo" "foo.numpy(1000)"
 200000 loops, best of 5: 1.31 usec per loop
 ```
 
-Filling a vector first in C++ and letting pybind11 convert it into a Python list should be slower than allocating a Python list or tuple and filling that directly, because memory is allocated once more than necessary for the vector. For small vectors, this is correct, but not for large vectors (N=1000+). This means that the allocation cost for the vector is already negligible compared to the cost of filling the list or tuple, which is very costly in Python.
+Filling a vector first in C++ and letting pybind11 convert it into a Python list should be slower than allocating a Python list or tuple and filling that directly, because memory is allocated once more than necessary for the vector. For small vectors, this is correct, but not for large vectors (N=1000+). For sufficiently large vectors the allocation cost for the vector is negligible compared to the cost of filling the list or tuple, which is very costly in Python.
 
-Allocating and filling lists or tuples make no difference in speed. However, using the unchecked `PyList_SET_ITEM` and `PyTuple_SET_ITEM` rather than the obvious pybind11 API makes a noticable difference. These unchecked functions are also used internally by pybind11 when it converts the vector to a list.
+Allocating and filling lists or tuples make no difference in speed. However, using the unchecked `PyList_SET_ITEM` and `PyTuple_SET_ITEM` rather than the obvious pybind11 API makes a noticable difference. These unchecked functions are also used internally by pybind11 when it converts the vector to a list automatically.
 
 For a list it is better to allocate first and then set the items instead of filling with `append`, no surprise here.
 
